@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Model;
+namespace App;
 
 class Db {
     private $dbh;
     public function __construct() {
-        $this->dbh = new \PDO('mysql:hoest=127.0.0.1;dbname=php2', 'root', '');
+        $this->dbh = new \PDO('mysql:host=127.0.0.1;dbname=php2', 'root', '');
         $this->execute('SET NAMES utf8');
     }
     public function execute ($sql, $data = []) {

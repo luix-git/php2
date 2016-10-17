@@ -1,8 +1,6 @@
 <?php
 
-function __autoload($classname){
-    require __DIR__ . '/' . str_replace('\\', '/', $classname) . '.php';
-}
+require __DIR__ . '/App/Other/autoload.php';
 
 $news = App\Model\Article::findLast(5);
 

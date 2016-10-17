@@ -4,7 +4,7 @@ namespace App\Model;
 
 abstract class Model {
     public static function findAll () {
-        $db = new Db();
+        $db = new \App\Db();
         $data = $db->query(
                 'SELECT * FROM ' . static::$table . ' ORDER BY id DESC',
                 [],
@@ -13,7 +13,7 @@ abstract class Model {
         return $data;
     }
     public static function findById($id) {
-        $db = new Db();
+        $db = new \App\Db();
         $data = $db->query(
                 'SELECT * FROM ' . static::$table . ' WHERE id=:id',
                 [':id' => $id],
@@ -22,7 +22,7 @@ abstract class Model {
         if ([] == $data) {
             return null;
         } else {
-            return $data;
+            return $data[0];
         }
     }
 }
