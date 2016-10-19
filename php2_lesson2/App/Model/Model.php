@@ -4,6 +4,9 @@ namespace App\Model;
 
 abstract class Model {
     public $id;
+    private $columns;
+    private $substitution;
+    
     public static function findAll () {
         $db = new \App\Db();
         $data = $db->query(
@@ -29,25 +32,51 @@ abstract class Model {
     public function isNew () {
         return empty($this->id);
     }
-    public function insert() {
+    private function dataForSql () {
+        $this->columns = [];
+        $this->substitution = [];
+        foreach ($this as $column => $value) {
+            if ('id' == $column || 'columns' == $column || 'substitution' == $column) {continue;}
+            $this->columns []  = $column;
+            $this->substitution [':' . $column] = $value;
+        }
+
+    }
+    private function insert() {
+        $this->dataForSql();
+        $sql = 'INSERT INTO ' . static::$table . '
+            (' . implode(', ', $this->columns) . ')
+            VALUES
+            (:' . implode(', :', $this->columns) . ')
+            ';
+        
+        $db = new \App\Db();
+        $db->execute($sql, $this->substitution);
+        $this->id = $db->lastInsertId();
+    }
+    public function update() {
+        $this->dataForSql();
+        $sql = 'UPDATE ' . static::$table . ' SET ';
+        foreach ($this->columns as $value) {
+            $column [] = $value . '=:' . $value;
+        }
+        $sql .= implode(',', $column) . ' WHERE id=' . $this->id . ';';
+       
+        $db = new \App\Db();
+        $db->execute($sql, $this->substitution);
+    }
+    public function save() {
         if ($this->isNew()) {
-            $columns = [];
-            $binds = [];
-            $data = [];
-            foreach ($this as $column => $value) {
-                if ('id' == $column) {continue;}
-                $columns []  = $column;
-                $binds [] = ':' . $column;
-                $data [':' . $column] = $value;
-            }
-            $sql = 'INSERT INTO ' . static::$table . '
-                (' . implode(', ', $columns) . ')
-                VALUES
-                (' . implode(', ', $binds) . ')
-                ';
+            $this->insert();
+        } else {
+            $this->update();
+        }
+    }
+    public function delete() {
+        if (!$this->isNew()) {
+            $sql = 'DELETE FROM news WHERE id=' . $this->id . ';';
             $db = new \App\Db();
-            $db->execute($sql, $data);
-            $this->id = $db->lastInsertId();
+            $db->execute($sql, $this->substitution);
         }
     }
 }
