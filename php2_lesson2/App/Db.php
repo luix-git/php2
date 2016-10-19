@@ -30,4 +30,7 @@ class Db {
             return $sth->fetchAll(\PDO::FETCH_CLASS, $class);
         }
     }
+    public function lastInsertId() {
+        return $this->dbh->lastInsertId();
+    }
 }

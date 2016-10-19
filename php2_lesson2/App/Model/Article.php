@@ -4,7 +4,6 @@ namespace App\Model;
 
 class Article extends Model{
     public static $table = 'news';
-    public $id;
     public $title;
     public $text;
     private $res;
