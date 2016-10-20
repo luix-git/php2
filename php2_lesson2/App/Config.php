@@ -3,11 +3,19 @@
 namespace App;
 
 class Config {
-    private $config;
+    private $config_file;
+    private static $instance;
     public $data;
-    public function __construct() {
-        $this->config = __DIR__ . '/Other/config.ini';
-        $this->data = parse_ini_file($this->config, true);
-        return $this->data;
+    public static function getObject() {
+        if (isset(self::$instance)) {
+            return self::$instance;
+        } else {
+            self::$instance = new self;
+            $config_file = __DIR__ . '/Other/config.ini';
+            self::$instance->data = parse_ini_file($config_file, true);
+            return self::$instance;
+        }
+    }
+    private function __construct() {
     }
 }

@@ -4,8 +4,13 @@ namespace App;
 
 class Db {
     private $dbh;
-    public function __construct() {
-        $this->dbh = new \PDO('mysql:host=127.0.0.1;dbname=php2', 'root', '111');
+    private $dsn;
+    private $config;
+    
+     public function __construct() {
+        $this->config = \App\Config::getObject();
+        $this->dsn = $this->config->data['db']['host'];
+        $this->dbh = new \PDO($this->dsn, 'root', '111');
         $this->execute('SET NAMES utf8');
     }
     public function execute ($sql, $data = []) {

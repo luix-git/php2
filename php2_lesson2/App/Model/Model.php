@@ -37,7 +37,7 @@ abstract class Model {
         $this->substitution = [];
         foreach ($this as $column => $value) {
             if ('id' == $column || 'columns' == $column || 'substitution' == $column) {continue;}
-            $this->columns []  = $column;
+            $this->columns[]  = $column;
             $this->substitution [':' . $column] = $value;
         }
 
@@ -58,7 +58,7 @@ abstract class Model {
         $this->dataForSql();
         $sql = 'UPDATE ' . static::$table . ' SET ';
         foreach ($this->columns as $value) {
-            $column [] = $value . '=:' . $value;
+            $column[] = $value . '=:' . $value;
         }
         $sql .= implode(',', $column) . ' WHERE id=' . $this->id . ';';
        
