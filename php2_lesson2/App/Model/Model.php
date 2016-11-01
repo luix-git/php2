@@ -2,12 +2,14 @@
 
 namespace App\Model;
 
-abstract class Model {
+abstract class Model
+{
     public $id;
     private $columns;
     private $substitution;
     
-    public static function findAll () {
+    public static function findAll ()
+    {
         $db = new \App\Db();
         $data = $db->query(
                 'SELECT * FROM ' . static::$table . ' ORDER BY id DESC',
@@ -16,7 +18,9 @@ abstract class Model {
         );
         return $data;
     }
-    public static function findById($id) {
+    
+    public static function findById($id)
+    {
         $db = new \App\Db();
         $data = $db->query(
                 'SELECT * FROM ' . static::$table . ' WHERE id=:id',
@@ -29,50 +33,64 @@ abstract class Model {
             return $data[0];
         }
     }
-    public function isNew () {
+    
+    public function isNew ()
+    {
         return empty($this->id);
     }
-    private function dataForSql () {
+    
+    private function dataForSql ()
+    {
         $this->columns = [];
         $this->substitution = [];
         foreach ($this as $column => $value) {
-            if ('id' == $column || 'columns' == $column || 'substitution' == $column) {continue;}
+            if ('columns' == $column || 'substitution' == $column) {continue;}
             $this->columns[]  = $column;
             $this->substitution [':' . $column] = $value;
         }
 
     }
-    private function insert() {
+    
+    private function insert()
+    {
         $this->dataForSql();
         $sql = 'INSERT INTO ' . static::$table . '
             (' . implode(', ', $this->columns) . ')
             VALUES
             (:' . implode(', :', $this->columns) . ')
             ';
-        
+
         $db = new \App\Db();
         $db->execute($sql, $this->substitution);
         $this->id = $db->lastInsertId();
     }
-    public function update() {
+    
+    public function update()
+    {
         $this->dataForSql();
         $sql = 'UPDATE ' . static::$table . ' SET ';
         foreach ($this->columns as $value) {
             $column[] = $value . '=:' . $value;
         }
-        $sql .= implode(',', $column) . ' WHERE id=' . $this->id . ';';
-       
+        $sql .= implode(',', $column) . ' WHERE id=:id';
+
+        echo $sql . '<br>';
+        var_dump($this->substitution);
         $db = new \App\Db();
         $db->execute($sql, $this->substitution);
     }
-    public function save() {
+    
+    public function save()
+    {
         if ($this->isNew()) {
             $this->insert();
         } else {
             $this->update();
         }
     }
-    public function delete() {
+    
+    public function delete()
+    {
         if (!$this->isNew()) {
             $sql = 'DELETE FROM news WHERE id=' . $this->id . ';';
             $db = new \App\Db();

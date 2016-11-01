@@ -2,11 +2,14 @@
 
 namespace App;
 
-class Config {
+class Config
+{
     private $config_file;
     private static $instance;
     public $data;
-    public static function getObject() {
+    
+    public static function getObject()
+    {
         if (isset(self::$instance)) {
             return self::$instance;
         } else {
@@ -16,6 +19,7 @@ class Config {
             return self::$instance;
         }
     }
+    
     private function __construct() {
     }
 }

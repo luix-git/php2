@@ -2,13 +2,17 @@
 
 namespace App\Model;
 
-class Article extends Model{
+class Article extends Model
+{
     public static $table = 'news';
+
     public $title;
     public $text;
+    
     private $res;
 
-    public static function findLast($number) {
+    public static function findLast($number)
+    {
         $news = Article::findAll();
         $res = [];
         foreach ($news as $key) {
