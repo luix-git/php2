@@ -64,6 +64,12 @@ abstract class Model
         $db->execute($sql, $this->substitution);
         $this->id = $db->lastInsertId();
     }
+    private function arrays_Intersection ($array, $keys) {
+        $resault = array_filter($array, function($key) use ($keys) {
+            return in_array($key, $keys);
+        }, ARRAY_FILTER_USE_KEY);
+        return $resault;
+    }
     
     public function update()
     {
@@ -91,8 +97,10 @@ abstract class Model
     
     public function delete()
     {
+        $this->dataForSql();
+        $this->substitution = $this->arrays_Intersection($this->substitution, [':id']);
         if (!$this->isNew()) {
-            $sql = 'DELETE FROM news WHERE id=' . $this->id . ';';
+            $sql = 'DELETE FROM news WHERE id=:id';
             $db = new \App\Db();
             $db->execute($sql, $this->substitution);
         }

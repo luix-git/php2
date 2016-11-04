@@ -11,7 +11,7 @@ class Db {
     {
         $this->config = \App\Config::getObject();
         $this->dsn = $this->config->data['db']['host'];
-        $this->dbh = new \PDO($this->dsn, 'root', '111');
+        $this->dbh = new \PDO($this->dsn, 'root', '');
         $this->execute('SET NAMES utf8');
     }
     
